@@ -1,35 +1,72 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Login from "./pages/Login";
+import HomeClient from "./pages/HomeClient";
+import Platillos from "./pages/Platillos";
+import Categoria from "./pages/Categoria";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { usuario } = useAuth();
+  return usuario ? <>{children}</> : <Navigate to="/" replace />;
 }
 
-export default App
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  const { usuario } = useAuth();
+  return !usuario ? <>{children}</> : <Navigate to="/home" replace />;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <HomeClient />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/platillos/:categoriaId"
+        element={
+          <ProtectedRoute>
+            <Platillos />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/categoria/:id"
+        element={
+          <ProtectedRoute>
+            <Categoria />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  );
+}
+
+export default App;
