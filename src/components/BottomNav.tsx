@@ -8,7 +8,7 @@ export default function BottomNav() {
   const navItems = [
     { label: "Restaurantes", icon: "🍽️", path: "/restaurantes" },
     { label: "Inicio", icon: "🏠", path: "/home", isCenter: true },
-    { label: "Categorías", icon: "📑", path: "/categorias" },
+    { label: "Mi Cuenta", icon: "👤", path: "/mi-cuenta" },
   ];
 
   return (

@@ -9,6 +9,7 @@ import Categorias from "./pages/Categorias";
 import Restaurantes from "./pages/Restaurantes";
 import RestauranteDetalle from "./pages/RestauranteDetalle";
 import DetallePlatillo from "./pages/DetallePlatillo";
+import MiCuenta from "./pages/MiCuenta";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -85,6 +86,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <DetallePlatillo />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mi-cuenta"
+        element={
+          <ProtectedRoute>
+            <MiCuenta />
           </ProtectedRoute>
         }
       />
