@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import BottomNav from "../components/BottomNav";
 import RestaurantCarousel from "../components/RestaurantCarousel";
+import PlatillosCarousel from "../components/PlatillosCarousel";
 
 interface Restaurante {
   id: string;
@@ -320,15 +321,46 @@ export default function HomeClient() {
             margin: "0 auto",
           }}
         >
-          {/* Logo */}
-          <img
-            src="/logo.png"
-            alt="Delibery"
-            style={{
-              height: "36px",
-              width: "auto",
-            }}
-          />
+          {/* Logo / Título moderno */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 10,
+                background: "linear-gradient(135deg,#7c3aed,#06b6d4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                fontWeight: 800,
+                boxShadow: "0 6px 18px rgba(124,58,237,0.25)",
+                fontSize: 16,
+              }}
+            >
+              FD
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+              <div
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  background: "linear-gradient(90deg,#ffffff,#fde68a)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                  textTransform: "capitalize",
+                }}
+              >
+                food deliberi riatan
+              </div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.9)", marginTop: 2 }}>
+                Tu comida, más cerca
+              </div>
+            </div>
+          </div>
 
           {/* Menu Icon */}
           <button
@@ -639,6 +671,11 @@ export default function HomeClient() {
             )}
         </div>
 
+        {/* Carrusel infinito de platillos */}
+        <PlatillosCarousel
+          platillos={platillos.sort(() => Math.random() - 0.5)}
+        />
+
         {/* Categorías / Platillos */}
         <section>
           <h2
@@ -678,6 +715,9 @@ export default function HomeClient() {
                     transition: "all 0.3s ease",
                     boxShadow: "0 6px 18px rgba(102,126,234,0.3)",
                     minHeight: "140px",
+                    /* Forma orgánica (hoja) */
+                    clipPath: "ellipse(65% 60% at 30% 35%)",
+                    WebkitClipPath: "ellipse(65% 60% at 30% 35%)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-4px)";
@@ -735,6 +775,9 @@ export default function HomeClient() {
                     alignItems: "center",
                     justifyContent: "center",
                     color: "#fff",
+                    /* Forma orgánica (hoja) */
+                    clipPath: "ellipse(65% 60% at 30% 35%)",
+                    WebkitClipPath: "ellipse(65% 60% at 30% 35%)",
                   }}
                 >
                   Cargando...
