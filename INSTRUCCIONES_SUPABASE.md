@@ -11,6 +11,7 @@
 7. Espera a que termine (puede tardar 10-20 segundos)
 
 **✅ Esto creará:**
+
 - Tablas: `restaurantes`, `categorias`, `platillos`, `bebidas`
 - Datos de ejemplo (5 restaurantes, 4 categorías, 12 platillos, 9 bebidas)
 - Triggers automáticos para actualizar `updated_at`
@@ -25,6 +26,7 @@
 4. Haz clic en **Run**
 
 **✅ Esto configurará:**
+
 - Row Level Security (RLS) en todas las tablas
 - Permisos de lectura pública para que la app pueda consultar los datos
 - Sin necesidad de autenticación para ver restaurantes/platillos
@@ -35,6 +37,7 @@
 
 1. En el menú lateral, selecciona **Table Editor**
 2. Deberías ver estas tablas:
+
    - ✅ `restaurantes` (5 filas)
    - ✅ `categorias` (4 filas)
    - ✅ `platillos` (12 filas)
@@ -59,19 +62,24 @@
 ## 🔍 Solución de Problemas
 
 ### Problema: "relation does not exist"
+
 **Solución:** Las tablas no fueron creadas. Vuelve al Paso 1.
 
 ### Problema: "permission denied for table"
+
 **Solución:** RLS está bloqueando el acceso. Ejecuta el Paso 2.
 
 ### Problema: "Failed to fetch"
+
 **Solución:** Verifica tu URL y API Key en `src/lib/supabase.ts`:
+
 ```typescript
-const supabaseUrl = 'https://jqhiubituqmwouaszjpc.supabase.co'
-const supabaseAnonKey = 'tu-anon-key-aqui'
+const supabaseUrl = "https://jqhiubituqmwouaszjpc.supabase.co";
+const supabaseAnonKey = "tu-anon-key-aqui";
 ```
 
 ### Problema: La app muestra datos pero dice "No hay restaurantes"
+
 **Solución:** Los datos de respaldo están funcionando. Revisa la consola para ver el error específico.
 
 ---
@@ -79,33 +87,38 @@ const supabaseAnonKey = 'tu-anon-key-aqui'
 ## 🎯 Comandos Útiles de SQL
 
 ### Ver todos los restaurantes:
+
 ```sql
 SELECT * FROM restaurantes;
 ```
 
 ### Ver categorías:
+
 ```sql
 SELECT * FROM categorias ORDER BY orden;
 ```
 
 ### Ver platillos con su restaurante:
+
 ```sql
-SELECT p.nombre, r.nombre as restaurante, p.precio 
-FROM platillos p 
+SELECT p.nombre, r.nombre as restaurante, p.precio
+FROM platillos p
 JOIN restaurantes r ON p.restaurante_id = r.id;
 ```
 
 ### Ver bebidas con su restaurante:
+
 ```sql
-SELECT b.nombre, r.nombre as restaurante, b.precio, b.tamano 
-FROM bebidas b 
+SELECT b.nombre, r.nombre as restaurante, b.precio, b.tamano
+FROM bebidas b
 JOIN restaurantes r ON b.restaurante_id = r.id;
 ```
 
 ### Verificar permisos RLS:
+
 ```sql
-SELECT schemaname, tablename, policyname 
-FROM pg_policies 
+SELECT schemaname, tablename, policyname
+FROM pg_policies
 WHERE schemaname = 'public';
 ```
 

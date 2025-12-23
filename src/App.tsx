@@ -5,6 +5,9 @@ import Login from "./pages/Login";
 import HomeClient from "./pages/HomeClient";
 import Platillos from "./pages/Platillos";
 import Categoria from "./pages/Categoria";
+import Categorias from "./pages/Categorias";
+import Restaurantes from "./pages/Restaurantes";
+import RestauranteDetalle from "./pages/RestauranteDetalle";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -49,6 +52,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Categoria />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/categorias"
+        element={
+          <ProtectedRoute>
+            <Categorias />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/restaurantes"
+        element={
+          <ProtectedRoute>
+            <Restaurantes />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/restaurante/:id"
+        element={
+          <ProtectedRoute>
+            <RestauranteDetalle />
           </ProtectedRoute>
         }
       />

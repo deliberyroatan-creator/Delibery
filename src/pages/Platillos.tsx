@@ -36,7 +36,9 @@ export default function Platillos() {
         // Traer platillos y nombre del restaurante asociado
         const { data, error } = await supabase
           .from("platillos")
-          .select(`id,nombre,descripcion,imagen_url,precio,disponible,restaurante_id, restaurantes(id,nombre)`)
+          .select(
+            `id,nombre,descripcion,imagen_url,precio,disponible,restaurante_id, restaurantes(id,nombre)`
+          )
           .eq("categoria_id", categoriaId)
           .order("nombre", { ascending: true });
 
@@ -53,7 +55,9 @@ export default function Platillos() {
             precio: p.precio,
             disponible: p.disponible,
             restaurante_id: p.restaurante_id,
-            restaurante: p.restaurantes ? { id: p.restaurantes.id, nombre: p.restaurantes.nombre } : null,
+            restaurante: p.restaurantes
+              ? { id: p.restaurantes.id, nombre: p.restaurantes.nombre }
+              : null,
           }));
           setPlatillos(mapped);
         }
@@ -74,7 +78,9 @@ export default function Platillos() {
         ← Volver
       </button>
 
-      <h2 style={{ fontSize: 20, marginBottom: 8 }}>{categoriaNombre ?? "Platillos"}</h2>
+      <h2 style={{ fontSize: 20, marginBottom: 8 }}>
+        {categoriaNombre ?? "Platillos"}
+      </h2>
 
       {loading ? (
         <p>Cargando platillos...</p>
@@ -83,17 +89,65 @@ export default function Platillos() {
       ) : (
         <div style={{ display: "grid", gap: 12 }}>
           {platillos.map((p) => (
-            <div key={p.id} style={{ display: "flex", gap: 12, alignItems: "center", background: "#fff", borderRadius: 12, padding: 12, boxShadow: "0 6px 20px rgba(0,0,0,0.06)" }}>
-              <div style={{ width: 84, height: 84, borderRadius: 8, overflow: "hidden", flex: "0 0 84px" }}>
-                <img src={p.imagen_url || "/placeholder.png"} alt={p.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div
+              key={p.id}
+              style={{
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                background: "#fff",
+                borderRadius: 12,
+                padding: 12,
+                boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  width: 84,
+                  height: 84,
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  flex: "0 0 84px",
+                }}
+              >
+                <img
+                  src={p.imagen_url || "/placeholder.png"}
+                  alt={p.nombre}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
                   <h3 style={{ fontSize: 16, margin: 0 }}>{p.nombre}</h3>
                   <div style={{ fontWeight: 700 }}>${p.precio.toFixed(2)}</div>
                 </div>
-                <p style={{ margin: "6px 0 0 0", color: "#6b7280", fontSize: 13 }}>{p.descripcion}</p>
-                {p.restaurante && <p style={{ margin: "6px 0 0 0", fontSize: 12, color: "#374151" }}>En: {p.restaurante.nombre}</p>}
+                <p
+                  style={{
+                    margin: "6px 0 0 0",
+                    color: "#6b7280",
+                    fontSize: 13,
+                  }}
+                >
+                  {p.descripcion}
+                </p>
+                {p.restaurante && (
+                  <p
+                    style={{
+                      margin: "6px 0 0 0",
+                      fontSize: 12,
+                      color: "#374151",
+                    }}
+                  >
+                    En: {p.restaurante.nombre}
+                  </p>
+                )}
               </div>
             </div>
           ))}
