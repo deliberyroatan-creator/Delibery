@@ -8,6 +8,7 @@ import Categoria from "./pages/Categoria";
 import Categorias from "./pages/Categorias";
 import Restaurantes from "./pages/Restaurantes";
 import RestauranteDetalle from "./pages/RestauranteDetalle";
+import DetallePlatillo from "./pages/DetallePlatillo";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -76,6 +77,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <RestauranteDetalle />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/platillo/:id"
+        element={
+          <ProtectedRoute>
+            <DetallePlatillo />
           </ProtectedRoute>
         }
       />

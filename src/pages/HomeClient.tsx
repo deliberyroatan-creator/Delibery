@@ -341,7 +341,13 @@ export default function HomeClient() {
               FD
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                lineHeight: 1,
+              }}
+            >
               <div
                 style={{
                   fontSize: 18,
@@ -356,7 +362,13 @@ export default function HomeClient() {
               >
                 food deliberi riatan
               </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.9)", marginTop: 2 }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "rgba(255,255,255,0.9)",
+                  marginTop: 2,
+                }}
+              >
                 Tu comida, más cerca
               </div>
             </div>
