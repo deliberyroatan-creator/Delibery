@@ -83,9 +83,7 @@ export default function PlatillosCarousel({ platillos }: Props) {
           <div
             key={`${platillo.id}-${idx}`}
             onClick={() => {
-              if (platillo.restaurante_id) {
-                navigate(`/restaurante/${platillo.restaurante_id}`);
-              }
+              navigate(`/platillo/${platillo.id}`);
             }}
             style={{
               minWidth: 130,
