@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface Restaurante {
@@ -20,6 +20,13 @@ interface Props {
 export default function RestaurantCarousel({ restaurantes }: Props) {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const autoScrollInterval = useRef<number | null>(
+    null as unknown as number | null
+  );
+  const isHovered = useRef(false);
+
+  // iniciar autoplay
+  useAutoScroll(containerRef, isHovered, autoScrollInterval);
 
   if (restaurantes.length === 0) {
     return (
@@ -61,9 +68,11 @@ export default function RestaurantCarousel({ restaurantes }: Props) {
         <div
           ref={containerRef}
           className="hide-scrollbar"
+          onMouseEnter={() => (isHovered.current = true)}
+          onMouseLeave={() => (isHovered.current = false)}
           style={{
             display: "flex",
-            gap: "16px",
+            gap: "12px",
             overflowX: "auto",
             paddingBottom: "8px",
             WebkitOverflowScrolling: "touch",
@@ -75,7 +84,7 @@ export default function RestaurantCarousel({ restaurantes }: Props) {
             <div
               key={restaurant.id}
               style={{
-                minWidth: "210px",
+                minWidth: "160px",
                 flex: "0 0 auto",
                 borderRadius: "10px",
                 overflow: "hidden",
@@ -91,7 +100,7 @@ export default function RestaurantCarousel({ restaurantes }: Props) {
             >
               <div
                 style={{
-                  height: "110px",
+                  height: "90px",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   backgroundImage: `url(${restaurant.imagen_url})`,
@@ -116,16 +125,16 @@ export default function RestaurantCarousel({ restaurantes }: Props) {
                   <h4
                     style={{
                       margin: 0,
-                      fontSize: "14px",
+                      fontSize: "13px",
                       fontWeight: 800,
                       color: "#0f172a",
                     }}
                   >
                     {restaurant.nombre}
                   </h4>
-                  <span style={{ fontSize: "18px" }}>{restaurant.emoji}</span>
+                  <span style={{ fontSize: "16px" }}>{restaurant.emoji}</span>
                 </div>
-                <p style={{ margin: 0, fontSize: "12px", color: "#475569" }}>
+                <p style={{ margin: 0, fontSize: "11px", color: "#475569" }}>
                   {restaurant.descripcion}
                 </p>
               </div>
@@ -136,3 +145,42 @@ export default function RestaurantCarousel({ restaurantes }: Props) {
     </section>
   );
 }
+
+// Autoplay: start automatic scroll when component mounts
+function useAutoScroll(
+  containerRef: React.RefObject<HTMLDivElement | null>,
+  isHoveredRef: React.MutableRefObject<boolean>,
+  intervalRef: React.MutableRefObject<number | null>
+) {
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    function step() {
+      if (!container) return;
+      if (isHoveredRef.current) return;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (maxScroll <= 0) return;
+      const current = container.scrollLeft;
+      const delta = Math.round(container.clientWidth * 0.5);
+      if (current >= maxScroll - 2) {
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        const move = Math.min(delta, maxScroll - current);
+        container.scrollBy({ left: move, behavior: "smooth" });
+      }
+    }
+
+    intervalRef.current = window.setInterval(step, 3000);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [containerRef, isHoveredRef, intervalRef]);
+}
+
+// Hook usage: start auto scroll inside module scope to keep component code tidy
+// Note: this will run for each import; it's fine because the hook is pure and tied to refs passed.
+// We expose the hook above and call it from the component by referring to the refs defined there.

@@ -23,7 +23,26 @@ export default function Login() {
       const usuario = await loginUsuario(email, password);
       if (usuario) {
         setUsuario(usuario);
-        navigate("/home");
+        
+        // Redireccionar según el tipo de usuario
+        switch (usuario.tipo_usuario) {
+          case "repartidor":
+            navigate("/repartidor/dashboard");
+            break;
+          case "restaurante":
+            navigate("/restaurante/dashboard");
+            break;
+          case "operador":
+            navigate("/operador/dashboard");
+            break;
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+          case "cliente":
+          default:
+            navigate("/home");
+            break;
+        }
       } else {
         setError("Email o contraseña incorrectos");
       }
