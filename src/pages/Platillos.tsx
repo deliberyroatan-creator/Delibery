@@ -91,6 +91,13 @@ export default function Platillos() {
           {platillos.map((p) => (
             <div
               key={p.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/platillo/${p.id}`)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ")
+                  navigate(`/platillo/${p.id}`);
+              }}
               style={{
                 display: "flex",
                 gap: 12,
@@ -99,6 +106,7 @@ export default function Platillos() {
                 borderRadius: 12,
                 padding: 12,
                 boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
+                cursor: "pointer",
               }}
             >
               <div

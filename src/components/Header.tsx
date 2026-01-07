@@ -19,10 +19,10 @@ export default function Header() {
           position: "sticky",
           top: 0,
           zIndex: 100,
-          background: "linear-gradient(135deg, #2e1065, #1e1b4b)", // Gradient purple moderno
-          padding: "18px 18px 32px", // Más padding abajo para la curva
-          boxShadow: "0 4px 20px rgba(30, 27, 75, 0.5)",
-          clipPath: "ellipse(100% 90% at 50% 10%)", // Curva suave en la parte inferior
+          background: "linear-gradient(135deg, #2e1065, #1e1b4b)",
+          padding: "12px 14px 14px", // menos alto
+          boxShadow: "0 2px 8px rgba(30, 27, 75, 0.18)",
+          clipPath: "ellipse(100% 75% at 50% 10%)", // curva más sutil
         }}
       >
         <div
@@ -36,16 +36,26 @@ export default function Header() {
         >
           {/* Logo + Título */}
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <img src="/logo.png" alt="Delibery" style={{ height: 48, borderRadius: "12px" }} />
-            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1 }}>
-              <div style={{ color: "#fff", fontWeight: 900, fontSize: 20 }}>
+            <img
+              src="/logo.png"
+              alt="Delibery"
+              style={{ height: 36, borderRadius: "10px" }}
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                lineHeight: 1.1,
+              }}
+            >
+              <div style={{ color: "#fff", fontWeight: 900, fontSize: 16 }}>
                 Food Delibery Roatan
               </div>
               <div
                 style={{
-                  fontSize: 13,
+                  fontSize: 12,
                   color: "rgba(255,255,255,0.9)",
-                  marginTop: 4,
+                  marginTop: 2,
                 }}
               >
                 Tu comida, más cerca
@@ -57,23 +67,48 @@ export default function Header() {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             style={{
-              background: "rgba(168, 85, 247, 0.25)",
+              background: "rgba(168, 85, 247, 0.22)",
               border: "none",
-              borderRadius: "16px",
-              padding: "12px 14px",
+              borderRadius: "12px",
+              padding: "8px 10px",
               cursor: "pointer",
               display: "flex",
               flexDirection: "column",
               gap: "4px",
               transition: "all 0.3s ease",
-              boxShadow: menuOpen ? "0 0 20px rgba(168, 85, 247, 0.4)" : "0 4px 10px rgba(0,0,0,0.2)",
+              boxShadow: menuOpen
+                ? "0 0 12px rgba(168, 85, 247, 0.28)"
+                : "0 2px 6px rgba(0,0,0,0.12)",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "scale(1.05)")
+            }
             onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
-            <div style={{ width: "24px", height: "3px", background: "#e9a1ff", borderRadius: "3px" }} />
-            <div style={{ width: "24px", height: "3px", background: "#e9a1ff", borderRadius: "3px" }} />
-            <div style={{ width: "24px", height: "3px", background: "#e9a1ff", borderRadius: "3px" }} />
+            <div
+              style={{
+                width: "20px",
+                height: "3px",
+                background: "#e9a1ff",
+                borderRadius: "3px",
+              }}
+            />
+            <div
+              style={{
+                width: "20px",
+                height: "3px",
+                background: "#e9a1ff",
+                borderRadius: "3px",
+              }}
+            />
+            <div
+              style={{
+                width: "20px",
+                height: "3px",
+                background: "#e9a1ff",
+                borderRadius: "3px",
+              }}
+            />
           </button>
         </div>
       </header>
@@ -124,8 +159,12 @@ export default function Header() {
                 fontWeight: 500,
                 transition: "background 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
               <span style={{ fontSize: "24px" }}>👤</span>
               Mi Cuenta
@@ -148,15 +187,23 @@ export default function Header() {
                 fontWeight: 500,
                 transition: "background 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
               <span style={{ fontSize: "24px" }}>📦</span>
               Mis Pedidos
             </button>
 
             <div
-              style={{ height: "1px", background: "rgba(255,255,255,0.2)", margin: "10px 0" }}
+              style={{
+                height: "1px",
+                background: "rgba(255,255,255,0.2)",
+                margin: "10px 0",
+              }}
             />
 
             <button
@@ -179,8 +226,12 @@ export default function Header() {
                 fontWeight: 500,
                 transition: "background 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,107,107,0.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "rgba(255,107,107,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
               <span style={{ fontSize: "24px" }}>🚪</span>
               Cerrar Sesión

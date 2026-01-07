@@ -226,6 +226,13 @@ export default function RestauranteDetalle() {
             {platillos.map((platillo) => (
               <div
                 key={platillo.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(`/platillo/${platillo.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ")
+                    navigate(`/platillo/${platillo.id}`);
+                }}
                 style={{
                   background: "#fff",
                   borderRadius: 12,
@@ -233,6 +240,7 @@ export default function RestauranteDetalle() {
                   display: "flex",
                   gap: 12,
                   boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  cursor: "pointer",
                 }}
               >
                 {platillo.imagen_url && (

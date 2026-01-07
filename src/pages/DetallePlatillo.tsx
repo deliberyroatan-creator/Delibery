@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 
 interface Platillo {
   id: string;
@@ -16,8 +17,12 @@ interface Platillo {
 export default function DetallePlatillo() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { usuario } = useAuth();
   const [platillo, setPlatillo] = useState<Platillo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [agregando, setAgregando] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -115,54 +120,120 @@ export default function DetallePlatillo() {
     );
   }
 
+  const agregarAlCarrito = async () => {
+    if (!platillo?.disponible || !usuario?.id || !platillo.restaurante_id)
+      return;
+
+    setAgregando(true);
+    try {
+      // Primero verificar si el platillo ya existe en el carrito
+      const { data: itemExistente, error: errorBuscar } = await supabase
+        .from("carrito")
+        .select("*")
+        .eq("usuario_id", usuario.id)
+        .eq("platillo_id", platillo.id)
+        .maybeSingle(); // Usar maybeSingle() en lugar de single()
+
+      if (itemExistente) {
+        // Si ya existe, actualizar la cantidad
+        const { error: updateError } = await supabase
+          .from("carrito")
+          .update({
+            cantidad: itemExistente.cantidad + quantity,
+            notas: notes || itemExistente.notas,
+          })
+          .eq("id", itemExistente.id);
+
+        if (updateError) throw updateError;
+
+        alert(
+          `✅ Cantidad actualizada en el carrito (${
+            itemExistente.cantidad + quantity
+          })`
+        );
+        const irAlCarrito = window.confirm("¿Quieres ir al carrito?");
+        if (irAlCarrito) {
+          navigate("/carrito");
+        }
+        return;
+      }
+
+      // Verificar si hay items de otro restaurante en el carrito
+      const { data: carritoActual } = await supabase
+        .from("carrito")
+        .select("restaurante_id")
+        .eq("usuario_id", usuario.id)
+        .limit(1)
+        .maybeSingle(); // Usar maybeSingle() en lugar de single()
+
+      if (
+        carritoActual &&
+        carritoActual.restaurante_id !== platillo.restaurante_id
+      ) {
+        const confirmar = window.confirm(
+          "Ya tienes items de otro restaurante en tu carrito. ¿Deseas vaciar el carrito y agregar este item?"
+        );
+        if (!confirmar) {
+          setAgregando(false);
+          return;
+        }
+
+        // Limpiar carrito
+        await supabase.from("carrito").delete().eq("usuario_id", usuario.id);
+      }
+
+      // Insertar nuevo item
+      const { error } = await supabase.from("carrito").insert({
+        usuario_id: usuario.id,
+        platillo_id: platillo.id,
+        restaurante_id: platillo.restaurante_id,
+        cantidad: quantity,
+        precio_unitario: platillo.precio || 0,
+        notas: notes || null,
+      });
+
+      if (error) throw error;
+
+      alert("✅ Agregado al carrito");
+      const irAlCarrito = window.confirm("¿Quieres ir al carrito?");
+      if (irAlCarrito) {
+        navigate("/carrito");
+      }
+    } catch (error: any) {
+      console.error("Error al agregar al carrito:", error);
+      alert(error.message || "Error al agregar al carrito");
+    } finally {
+      setAgregando(false);
+    }
+  };
+
   return (
     <div
       style={{ minHeight: "100vh", background: "#fafafa", paddingBottom: 80 }}
     >
-      <div style={{ position: "relative" }}>
-        <div
-          style={{
-            height: 260,
-            backgroundImage: `url(${
-              platillo.imagen_url || "/placeholder.png"
-            })`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            position: "absolute",
-            top: 16,
-            left: 16,
-            width: 36,
-            height: 36,
-            borderRadius: "50%",
-            border: "none",
-            background: "rgba(255,255,255,0.95)",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 18,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-          }}
-        >
-          ←
-        </button>
-      </div>
-
       <div
         style={{
           background: "#fff",
-          padding: "20px 16px",
+          padding: "16px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
           maxWidth: 700,
-          margin: "-40px auto 0 auto",
+          margin: "16px auto",
           borderRadius: 12,
         }}
       >
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            border: "none",
+            background: "transparent",
+            fontSize: 18,
+            cursor: "pointer",
+            padding: 0,
+            marginBottom: 8,
+          }}
+        >
+          ← Volver
+        </button>
         <div style={{ display: "flex", gap: 12 }}>
           <div style={{ flex: 1 }}>
             <h1
@@ -190,6 +261,39 @@ export default function DetallePlatillo() {
             >
               <div style={{ fontSize: 20, fontWeight: 800, color: "#059669" }}>
                 ${(platillo.precio || 0).toFixed(2)}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 8,
+                    border: "none",
+                    background: "#f3f4f6",
+                    cursor: "pointer",
+                  }}
+                >
+                  −
+                </button>
+                <div
+                  style={{ minWidth: 30, textAlign: "center", fontWeight: 700 }}
+                >
+                  {quantity}
+                </div>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 8,
+                    border: "none",
+                    background: "#f3f4f6",
+                    cursor: "pointer",
+                  }}
+                >
+                  +
+                </button>
               </div>
               <div
                 style={{
@@ -236,19 +340,86 @@ export default function DetallePlatillo() {
               Ver restaurante
             </button>
           )}
-          <button
-            disabled={!platillo.disponible}
+          <div
             style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              border: "none",
-              background: platillo.disponible ? "#059669" : "#9ca3af",
-              color: "#fff",
-              cursor: platillo.disponible ? "pointer" : "not-allowed",
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              flex: "1 1 auto",
             }}
           >
-            Agregar al carrito
-          </button>
+            <textarea
+              placeholder="Instrucciones especiales (opcional)"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              style={{
+                width: "100%",
+                minHeight: 56,
+                padding: 8,
+                borderRadius: 8,
+                border: "1px solid #e5e7eb",
+                resize: "vertical",
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky add-to-cart bar above BottomNav */}
+      <div
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 100,
+          display: "flex",
+          justifyContent: "center",
+          zIndex: 120,
+        }}
+      >
+        <div style={{ maxWidth: 700, width: "100%", padding: "10px 16px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 12,
+              alignItems: "center",
+              background: "#fff",
+              borderRadius: 12,
+              padding: 12,
+              boxShadow: "0 6px 20px rgba(2,6,23,0.06)",
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 14, color: "#6b7280" }}>Total</div>
+              <div style={{ fontWeight: 800, fontSize: 18 }}>
+                ${((platillo.precio || 0) * quantity).toFixed(2)}
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <button
+                onClick={agregarAlCarrito}
+                disabled={!platillo.disponible || agregando}
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: 10,
+                  border: "none",
+                  background:
+                    platillo.disponible && !agregando ? "#059669" : "#9ca3af",
+                  color: "#fff",
+                  cursor:
+                    platillo.disponible && !agregando
+                      ? "pointer"
+                      : "not-allowed",
+                  fontWeight: 700,
+                }}
+              >
+                {agregando
+                  ? "⏳ Agregando..."
+                  : `🛒 Añadir ${quantity > 1 ? `(${quantity})` : ""}`}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

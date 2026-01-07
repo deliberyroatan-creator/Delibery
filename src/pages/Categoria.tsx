@@ -169,6 +169,13 @@ export default function Categoria() {
                   {platillos.map((p) => (
                     <div
                       key={p.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate(`/platillo/${p.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ")
+                          navigate(`/platillo/${p.id}`);
+                      }}
                       style={{
                         display: "flex",
                         gap: 12,
@@ -177,6 +184,7 @@ export default function Categoria() {
                         borderRadius: 12,
                         padding: 12,
                         boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
+                        cursor: "pointer",
                       }}
                     >
                       <div
@@ -250,6 +258,13 @@ export default function Categoria() {
                   {bebidas.map((b) => (
                     <div
                       key={b.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate(`/platillo/${b.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ")
+                          navigate(`/platillo/${b.id}`);
+                      }}
                       style={{
                         display: "flex",
                         gap: 12,
@@ -258,6 +273,7 @@ export default function Categoria() {
                         borderRadius: 12,
                         padding: 12,
                         boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
+                        cursor: "pointer",
                       }}
                     >
                       <div

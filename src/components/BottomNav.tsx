@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 export default function BottomNav() {
   const navigate = useNavigate();
@@ -7,17 +8,30 @@ export default function BottomNav() {
 
   const navItems = [
     { label: "Restaurantes", icon: "🍽️", path: "/restaurantes" },
-    { label: "Inicio", icon: "🏠", path: "/home", isCenter: true },
+    { label: "Carrito", icon: "🛒", path: "/carrito" },
+    { label: "Inicio", icon: "🏠", path: "/home" },
+    { label: "Pedidos", icon: "📦", path: "/pedidos" },
     { label: "Mi Cuenta", icon: "👤", path: "/mi-cuenta" },
   ];
 
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    const idx = navItems.findIndex((i) => i.path === location.pathname);
+    return idx >= 0 ? idx : 2; // Índice 2 es "Inicio"
+  });
+
+  useEffect(() => {
+    const idx = navItems.findIndex((i) => i.path === location.pathname);
+    if (idx >= 0) setSelectedIndex(idx);
+  }, [location.pathname]);
+
+  // compute left/center/right to always show the selected item in center
+  const len = navItems.length;
+  const leftItem = navItems[(selectedIndex + len - 1) % len];
+  const centerItem = navItems[selectedIndex];
+  const rightItem = navItems[(selectedIndex + 1) % len];
+
   return (
-    <motion.nav
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      transition={{ type: "spring", stiffness: 120, damping: 15 }}
-      style={styles.navContainer as any}
-    >
+    <nav style={styles.navContainer as any}>
       {/* Curved Background - Slightly adjusted for a modern feel */}
       <svg
         width="100%"
@@ -41,88 +55,124 @@ export default function BottomNav() {
           d="M 0 35 Q 93.75 0 187.5 0 Q 281.25 0 375 35 L 375 85 L 0 85 Z"
           fill="url(#navGradient)"
           style={{
-            filter: "url(#glow) drop-shadow(0 -6px 20px rgba(0,0,0,0.4))",
+            // quitar drop-shadow para que no se vea una sombra gris oscura
+            filter: "url(#glow)",
           }} // Más sombra
         />
       </svg>
 
       <div style={styles.buttonWrapper as any}>
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          const IconComponent = item.icon; // Emoji string
+        {/* Left */}
+        <motion.button
+          key={leftItem.path}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => {
+            const idx = navItems.findIndex((i) => i.path === leftItem.path);
+            if (idx >= 0) setSelectedIndex(idx);
+            if (location.pathname === leftItem.path) {
+              // ya estamos en la misma vista: sólo actualizamos selección
+              return;
+            }
+            navigate(leftItem.path);
+          }}
+          style={styles.sideButton as any}
+        >
+          <motion.div
+            initial={{ color: "#a7a7a7" }}
+            animate={{
+              color: location.pathname === leftItem.path ? "#fff" : "#a7a7a7",
+            }}
+            transition={{ duration: 0.15 }}
+            style={{ fontSize: "24px" }}
+          >
+            <span>{leftItem.icon}</span>
+          </motion.div>
+          <motion.span style={styles.label as any}>
+            {leftItem.label}
+          </motion.span>
+          {location.pathname === leftItem.path && (
+            <div style={styles.activeDot as any} />
+          )}
+        </motion.button>
 
-          if (item.isCenter) {
-            return (
-              <motion.button
-                key={item.path}
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ scale: 1.05 }}
-                onClick={() => navigate(item.path)}
-                style={styles.centerButton as any}
-              >
-                <motion.div
-                  initial={{
-                    background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                  }}
-                  animate={{
-                    background: isActive
-                      ? "linear-gradient(135deg, #a78bfa, #c4b5fd)"
-                      : "linear-gradient(135deg, #4f46e5, #7c3aed)",
-                  }}
-                  transition={{ duration: 0.3 }}
-                  style={styles.centerButtonGlow as any}
-                />
-                <motion.span
-                  key="center-icon"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: isActive ? 1.2 : 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  style={{
-                    fontSize: "32px",
-                    color: isActive ? "#4f46e5" : "#fff",
-                  }}
-                >
-                  <span>{IconComponent}</span>
-                </motion.span>
-              </motion.button>
-            );
-          }
+        {/* Center (selected) */}
+        <motion.button
+          key={centerItem.path}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => {
+            const idx = navItems.findIndex((i) => i.path === centerItem.path);
+            if (idx >= 0) setSelectedIndex(idx);
+            if (location.pathname === centerItem.path) {
+              return;
+            }
+            navigate(centerItem.path);
+          }}
+          style={styles.centerButton as any}
+        >
+          <motion.div
+            initial={{
+              background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+            }}
+            animate={{
+              background:
+                location.pathname === centerItem.path
+                  ? "linear-gradient(135deg, #a78bfa, #c4b5fd)"
+                  : "linear-gradient(135deg, #4f46e5, #7c3aed)",
+            }}
+            transition={{ duration: 0.2 }}
+            style={styles.centerButtonGlow as any}
+          />
+          <motion.span
+            initial={{ scale: 0.95 }}
+            animate={{
+              scale: location.pathname === centerItem.path ? 1.15 : 1,
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            style={{
+              fontSize: "28px",
+              color: location.pathname === centerItem.path ? "#4f46e5" : "#fff",
+            }}
+          >
+            <span>{centerItem.icon}</span>
+          </motion.span>
+        </motion.button>
 
-          return (
-            <motion.button
-              key={item.path}
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => navigate(item.path)}
-              style={styles.sideButton as any}
-            >
-              <motion.div
-                initial={{ color: "#a7a7a7" }}
-                animate={{ color: isActive ? "#fff" : "#a7a7a7" }}
-                transition={{ duration: 0.2 }}
-                style={{ fontSize: "24px" }}
-              >
-                <span>{IconComponent}</span>
-              </motion.div>
-              <motion.span
-                initial={{ opacity: 0.7 }}
-                animate={{ opacity: isActive ? 1 : 0.7 }}
-                transition={{ duration: 0.2 }}
-                style={styles.label as any}
-              >
-                {item.label}
-              </motion.span>
-              {isActive && (
-                <motion.div
-                  layoutId="activeTabIndicator"
-                  style={styles.activeDot as any}
-                />
-              )}
-            </motion.button>
-          );
-        })}
+        {/* Right */}
+        <motion.button
+          key={rightItem.path}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => {
+            const idx = navItems.findIndex((i) => i.path === rightItem.path);
+            if (idx >= 0) setSelectedIndex(idx);
+            if (location.pathname === rightItem.path) {
+              return;
+            }
+            navigate(rightItem.path);
+          }}
+          style={styles.sideButton as any}
+        >
+          <motion.div
+            initial={{ color: "#a7a7a7" }}
+            animate={{
+              color: location.pathname === rightItem.path ? "#fff" : "#a7a7a7",
+            }}
+            transition={{ duration: 0.15 }}
+            style={{ fontSize: "24px" }}
+          >
+            <span>{rightItem.icon}</span>
+          </motion.div>
+          <motion.span style={styles.label as any}>
+            {rightItem.label}
+          </motion.span>
+          {location.pathname === rightItem.path && (
+            <div style={styles.activeDot as any} />
+          )}
+        </motion.button>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
 
@@ -171,7 +221,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+    boxShadow: "none",
     marginBottom: "35px", // Empuja más hacia arriba para la curva
     position: "relative",
     zIndex: 1, // Asegura que el botón esté por encima del SVG

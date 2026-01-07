@@ -18,7 +18,9 @@ export default function MiCuenta() {
     direccion: usuario?.direccion || "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -71,7 +73,9 @@ export default function MiCuenta() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fafafa", paddingBottom: 80 }}>
+    <div
+      style={{ minHeight: "100vh", background: "#fafafa", paddingBottom: 80 }}
+    >
       <Header />
 
       <main style={{ maxWidth: 600, margin: "0 auto", padding: "20px 16px" }}>
@@ -84,7 +88,14 @@ export default function MiCuenta() {
             marginBottom: 20,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              marginBottom: 24,
+            }}
+          >
             <div
               style={{
                 width: 80,
@@ -102,10 +113,19 @@ export default function MiCuenta() {
               {usuario.nombre.charAt(0).toUpperCase()}
             </div>
             <div style={{ flex: 1 }}>
-              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#0f172a" }}>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: 24,
+                  fontWeight: 800,
+                  color: "#0f172a",
+                }}
+              >
                 {usuario.nombre}
               </h1>
-              <p style={{ margin: "4px 0 0 0", color: "#6b7280", fontSize: 14 }}>
+              <p
+                style={{ margin: "4px 0 0 0", color: "#6b7280", fontSize: 14 }}
+              >
                 {usuario.email}
               </p>
               <span
@@ -120,7 +140,9 @@ export default function MiCuenta() {
                   fontWeight: 600,
                 }}
               >
-                {usuario.tipo_usuario === "cliente" ? "Cliente" : usuario.tipo_usuario}
+                {usuario.tipo_usuario === "cliente"
+                  ? "Cliente"
+                  : usuario.tipo_usuario}
               </span>
             </div>
           </div>
@@ -143,31 +165,76 @@ export default function MiCuenta() {
           {!editing ? (
             <>
               <div style={{ marginBottom: 20 }}>
-                <h3 style={{ margin: "0 0 16px 0", fontSize: 16, fontWeight: 700, color: "#374151" }}>
+                <h3
+                  style={{
+                    margin: "0 0 16px 0",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: "#374151",
+                  }}
+                >
                   Información Personal
                 </h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 16 }}
+                >
                   <div>
-                    <label style={{ fontSize: 13, color: "#6b7280", fontWeight: 600 }}>
+                    <label
+                      style={{
+                        fontSize: 13,
+                        color: "#6b7280",
+                        fontWeight: 600,
+                      }}
+                    >
                       Nombre
                     </label>
-                    <p style={{ margin: "4px 0 0 0", fontSize: 15, color: "#0f172a" }}>
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        fontSize: 15,
+                        color: "#0f172a",
+                      }}
+                    >
                       {usuario.nombre}
                     </p>
                   </div>
                   <div>
-                    <label style={{ fontSize: 13, color: "#6b7280", fontWeight: 600 }}>
+                    <label
+                      style={{
+                        fontSize: 13,
+                        color: "#6b7280",
+                        fontWeight: 600,
+                      }}
+                    >
                       Teléfono
                     </label>
-                    <p style={{ margin: "4px 0 0 0", fontSize: 15, color: "#0f172a" }}>
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        fontSize: 15,
+                        color: "#0f172a",
+                      }}
+                    >
                       {usuario.telefono || "No especificado"}
                     </p>
                   </div>
                   <div>
-                    <label style={{ fontSize: 13, color: "#6b7280", fontWeight: 600 }}>
+                    <label
+                      style={{
+                        fontSize: 13,
+                        color: "#6b7280",
+                        fontWeight: 600,
+                      }}
+                    >
                       Dirección
                     </label>
-                    <p style={{ margin: "4px 0 0 0", fontSize: 15, color: "#0f172a" }}>
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        fontSize: 15,
+                        color: "#0f172a",
+                      }}
+                    >
                       {usuario.direccion || "No especificada"}
                     </p>
                   </div>
@@ -194,7 +261,14 @@ export default function MiCuenta() {
             </>
           ) : (
             <form onSubmit={handleSubmit}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 20 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 16,
+                  marginBottom: 20,
+                }}
+              >
                 <div>
                   <label
                     htmlFor="nombre"

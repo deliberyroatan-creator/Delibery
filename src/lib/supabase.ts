@@ -1,8 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = "https://jqhiubituqmwouaszjpc.supabase.co";
-const supabaseAnonKey =
-  "sb_publishable_yk9cpugGvHpx_0Ys8hKEsw_h8NH14CR";
+const supabaseAnonKey = "sb_publishable_yk9cpugGvHpx_0Ys8hKEsw_h8NH14CR";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -12,7 +11,7 @@ export interface Usuario {
   nombre: string;
   telefono?: string;
   direccion?: string;
-  tipo_usuario: "cliente" | "repartidor" | "admin";
+  tipo_usuario: "cliente" | "repartidor" | "restaurante" | "operador" | "admin";
   activo: boolean;
   created_at: string;
   updated_at: string;
